@@ -17,14 +17,14 @@ function orderUrl(name) {
 }
 
 function isCustomOrder(product) {
-  return product.name === 'Bolo no pote' || product.name === 'Mini vulcão';
+  return product.name === 'Quentinha' || product.name === 'Bolo no pote' || product.name === 'Mini vulcão';
 }
 
 function productCard(product) {
   const imageSource = product.image.startsWith('http') ? product.image : `${baseImage}${product.image}`;
   const fallback = '';
   const orderAction = isCustomOrder(product)
-    ? `<button class="order-link custom-order" type="button" data-product="${product.name}">Escolher sabor ↗</button>`
+    ? `<button class="order-link custom-order" type="button" data-product="${product.name}">${product.name === 'Quentinha' ? 'Montar quentinha ↗' : 'Escolher sabor ↗'}</button>`
     : `<a class="order-link" href="${orderUrl(product.name)}" target="_blank" rel="noopener">Pedir ↗</a>`;
   return `<article class="product-card"><img src="${imageSource}" alt="${product.name} da Elohin Lanches"${fallback}><div class="product-info"><span class="price">${product.price}</span><h3>${product.name}</h3><p>${product.description}</p>${orderAction}</div></article>`;
 }
@@ -65,9 +65,11 @@ const orderProduct = document.querySelector('#order-product');
 function openOrderModal(productName) {
   orderProduct.value = productName;
   document.querySelector('#order-title').textContent = `Pedir ${productName}`;
-  flavorFields.innerHTML = productName === 'Bolo no pote'
-    ? '<label>Sabor do bolo de pote<select name="flavor" required><option value="">Escolha o sabor</option><option>Maracujá</option><option>Chocolate</option><option>Ninho com Nutella</option><option>2 amores</option></select></label>'
-    : '<div class="form-grid"><label>Massa<select name="mass" required><option value="">Escolha a massa</option><option>Branca</option><option>Chocolate</option><option>Cenoura</option></select></label><label>Cobertura<select name="topping" required><option value="">Escolha a cobertura</option><option>Ninho com Nutella</option><option>Ninho com Oreo</option><option>Ninho com morango</option><option>Chocolate</option><option>2 amores</option><option>Ferrero Rocher</option></select></label></div>';
+  flavorFields.innerHTML = productName === 'Quentinha'
+    ? '<div class="form-grid"><label>Escolha seu feijão<select name="beans" required><option value="">Escolha o feijão</option><option>Feijão preto</option><option>Feijão na farofa</option></select></label><label>Escolha seu arroz<select name="rice" required><option value="">Escolha o arroz</option><option>Arroz refogado</option><option>Arroz branco</option></select></label><label>Escolha seu espaguete<select name="pasta" required><option value="">Escolha o espaguete</option><option>Macarrão espaguete</option></select></label><label>Escolha seu acompanhamento<select name="side" required><option value="">Escolha o acompanhamento</option><option>Batata doce</option><option>Salada</option><option>Farofa</option></select></label><label class="form-full">Escolha sua proteína<select name="protein" required><option value="">Escolha a proteína</option><option>Frango no forno</option><option>Cupim ao molho</option><option>Strogonoff</option><option>Bife acebolado</option><option>Linguiça acebolada</option></select></label></div>'
+    : productName === 'Bolo no pote'
+      ? '<label>Sabor do bolo de pote<select name="flavor" required><option value="">Escolha o sabor</option><option>Maracujá</option><option>Chocolate</option><option>Ninho com Nutella</option><option>2 amores</option></select></label>'
+      : '<div class="form-grid"><label>Massa<select name="mass" required><option value="">Escolha a massa</option><option>Branca</option><option>Chocolate</option><option>Cenoura</option></select></label><label>Cobertura<select name="topping" required><option value="">Escolha a cobertura</option><option>Ninho com Nutella</option><option>Ninho com Oreo</option><option>Ninho com morango</option><option>Chocolate</option><option>2 amores</option><option>Ferrero Rocher</option></select></label></div>';
   orderModal.classList.add('open');
   orderModal.setAttribute('aria-hidden', 'false');
 }
@@ -88,9 +90,11 @@ orderForm.addEventListener('submit', (event) => {
   event.preventDefault();
   const data = new FormData(orderForm);
   const product = data.get('product');
-  const choices = product === 'Bolo no pote'
-    ? `Sabor: ${data.get('flavor')}`
-    : `Massa: ${data.get('mass')}\nCobertura: ${data.get('topping')}`;
+  const choices = product === 'Quentinha'
+    ? `Feijão: ${data.get('beans')}\nArroz: ${data.get('rice')}\nEspaguete: ${data.get('pasta')}\nAcompanhamento: ${data.get('side')}\nProteína: ${data.get('protein')}`
+    : product === 'Bolo no pote'
+      ? `Sabor: ${data.get('flavor')}`
+      : `Massa: ${data.get('mass')}\nCobertura: ${data.get('topping')}`;
   const message = `Olá! Quero pedir: ${product}.\n${choices}\n\nNome: ${data.get('name')}\nTelefone: ${data.get('phone')}\nEndereço: ${data.get('address')}\nNúmero da casa ou apto: ${data.get('number')}\nPonto de referência: ${data.get('reference')}\nComplemento: ${data.get('complement') || 'Nenhum'}`;
   window.open(`${whatsapp}${encodeURIComponent(message)}`, '_blank', 'noopener');
   closeOrderModal();
