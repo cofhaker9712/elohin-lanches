@@ -16,10 +16,17 @@ function orderUrl(name) {
   return `${whatsapp}${encodeURIComponent(`Olá! Quero pedir: ${name}.`)}`;
 }
 
+function isCustomOrder(product) {
+  return product.name === 'Bolo no pote' || product.name === 'Mini vulcão';
+}
+
 function productCard(product) {
   const imageSource = product.image.startsWith('http') ? product.image : `${baseImage}${product.image}`;
   const fallback = '';
-  return `<article class="product-card"><img src="${imageSource}" alt="${product.name} da Elohin Lanches"${fallback}><div class="product-info"><span class="price">${product.price}</span><h3>${product.name}</h3><p>${product.description}</p><a class="order-link" href="${orderUrl(product.name)}" target="_blank" rel="noopener">Pedir ↗</a></div></article>`;
+  const orderAction = isCustomOrder(product)
+    ? `<button class="order-link custom-order" type="button" data-product="${product.name}">Escolher sabor ↗</button>`
+    : `<a class="order-link" href="${orderUrl(product.name)}" target="_blank" rel="noopener">Pedir ↗</a>`;
+  return `<article class="product-card"><img src="${imageSource}" alt="${product.name} da Elohin Lanches"${fallback}><div class="product-info"><span class="price">${product.price}</span><h3>${product.name}</h3><p>${product.description}</p>${orderAction}</div></article>`;
 }
 
 function renderProducts(category = 'todos') {
@@ -49,5 +56,49 @@ document.querySelector('.menu-toggle').addEventListener('click', (event) => {
 });
 
 document.querySelectorAll('.main-nav a').forEach((link) => link.addEventListener('click', () => document.querySelector('.main-nav').classList.remove('open')));
+
+const orderModal = document.querySelector('#order-modal');
+const orderForm = document.querySelector('#order-form');
+const flavorFields = document.querySelector('#flavor-fields');
+const orderProduct = document.querySelector('#order-product');
+
+function openOrderModal(productName) {
+  orderProduct.value = productName;
+  document.querySelector('#order-title').textContent = `Pedir ${productName}`;
+  flavorFields.innerHTML = productName === 'Bolo no pote'
+    ? '<label>Sabor do bolo de pote<select name="flavor" required><option value="">Escolha o sabor</option><option>Maracujá</option><option>Chocolate</option><option>Ninho com Nutella</option><option>2 amores</option></select></label>'
+    : '<div class="form-grid"><label>Massa<select name="mass" required><option value="">Escolha a massa</option><option>Branca</option><option>Chocolate</option><option>Cenoura</option></select></label><label>Cobertura<select name="topping" required><option value="">Escolha a cobertura</option><option>Ninho com Nutella</option><option>Ninho com Oreo</option><option>Ninho com morango</option><option>Chocolate</option><option>2 amores</option><option>Ferrero Rocher</option></select></label></div>';
+  orderModal.classList.add('open');
+  orderModal.setAttribute('aria-hidden', 'false');
+}
+
+function closeOrderModal() {
+  orderModal.classList.remove('open');
+  orderModal.setAttribute('aria-hidden', 'true');
+  orderForm.reset();
+}
+
+document.addEventListener('click', (event) => {
+  const orderButton = event.target.closest('.custom-order');
+  if (orderButton) openOrderModal(orderButton.dataset.product);
+  if (event.target.matches('.modal-close') || event.target === orderModal) closeOrderModal();
+});
+
+orderForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const data = new FormData(orderForm);
+  const product = data.get('product');
+  const choices = product === 'Bolo no pote'
+    ? `Sabor: ${data.get('flavor')}`
+    : `Massa: ${data.get('mass')}\nCobertura: ${data.get('topping')}`;
+  const message = `Olá! Quero pedir: ${product}.\n${choices}\n\nNome: ${data.get('name')}\nTelefone: ${data.get('phone')}\nEndereço: ${data.get('address')}\nNúmero da casa ou apto: ${data.get('number')}\nPonto de referência: ${data.get('reference')}\nComplemento: ${data.get('complement') || 'Nenhum'}`;
+  window.open(`${whatsapp}${encodeURIComponent(message)}`, '_blank', 'noopener');
+  closeOrderModal();
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && orderModal.classList.contains('open')) closeOrderModal();
+});
+
 renderProducts();
 renderCombos();
