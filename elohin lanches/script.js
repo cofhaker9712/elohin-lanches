@@ -1,8 +1,8 @@
 const whatsapp = 'https://wa.me/5583993443315?text=';
 const products = [
   { name: 'Quentinha', category: 'quentinhas', price: 'A partir de R$ 20', description: 'Duas opções de carne e acompanhamentos variados.', image: '../quentinhas/quentinha.jpg' },
-  { name: 'Bolo no pote', category: 'sobremesas', price: 'R$ 5,00', description: 'Sabores: MARACUJÁ, CHOCOLATE, NINHO COM NUTELLA e 2 AMORES.', image: 'a1f293b6-7e7b-498f-a6d0-e71243b30597.jpeg' },
-  { name: 'Coxinha especial', category: 'salgados', price: 'R$ 8,00', description: 'Frango com requeijão ou carne seca.', image: '3db0ee47-e377-4dd5-9fd3-8263ed0e6a7a.jpeg' },
+  { name: 'Bolo no pote', category: 'sobremesas', price: 'R$ 7,00', description: 'Sabores: MARACUJÁ, CHOCOLATE, NINHO COM NUTELLA e 2 AMORES.', image: 'a1f293b6-7e7b-498f-a6d0-e71243b30597.jpeg' },
+  { name: 'Coxinha especial', category: 'salgados', price: 'R$ 10,00', description: 'Frango com requeijão ou carne seca.', image: '3db0ee47-e377-4dd5-9fd3-8263ed0e6a7a.jpeg' },
   { name: 'Mini vulcão', category: 'sobremesas', price: 'R$ 15,00', description: 'Massas: branca, chocolate ou cenoura. Coberturas: ninho com Nutella, ninho com Oreo, ninho com morango, chocolate, 2 amores ou Ferrero Rocher.', image: '358c2c0c-e200-4845-813a-d24a7eb2e7f5.jpeg' },
   { name: 'Lasanha bolonhesa', category: 'lanches', price: 'R$ 20,00', description: 'Lasanha bolonhesa de 500g.', image: '845081ca-ec4e-4c5b-baf6-095c70dd90b0.jpeg' },
   { name: 'Batata cheddar e bacon', category: 'lanches', price: 'R$ 20,00', description: 'Batata frita com cheddar e bacon.', image: '8fdbec42-bbb6-4388-aae7-d1c344fc39df.jpeg' },
